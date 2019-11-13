@@ -6,6 +6,7 @@
     "jest": true
   },
   "extends": [
+    "react-app",
     "plugin:react/recommended",
     "airbnb-typescript/base",
     "plugin:@typescript-eslint/recommended",
@@ -19,6 +20,9 @@
   "settings": {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "react": {
+      "version": "detect"
     }
   },
   "parserOptions": {
@@ -27,6 +31,7 @@
   },
   "rules": {
     "@typescript-eslint/no-unused-vars": "error",
-    "arrow-body-style": ["error", "as-needed"]
+    "arrow-body-style": ["error", "as-needed"],
+    "react/prop-types": 0
   }
 }
