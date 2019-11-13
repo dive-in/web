@@ -1,0 +1,21 @@
+FROM node:latest
+
+ARG port=3000
+
+ENV PORT=${port}
+
+WORKDIR /app
+
+RUN npm i -g yarn
+
+COPY package.json yarn.lock ./
+
+RUN yarn
+
+COPY . .
+
+COPY [".eslintrc", "."]
+
+EXPOSE ${PORT}
+
+CMD ["yarn", "start"]

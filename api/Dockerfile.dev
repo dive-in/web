@@ -1,0 +1,19 @@
+FROM node:latest
+
+ARG port=8080
+
+ENV PORT=${port}
+
+WORKDIR /app
+
+RUN npm i -g yarn
+
+COPY package.json yarn.lock ./
+
+RUN yarn
+
+COPY . .
+
+EXPOSE ${PORT}
+
+CMD ["yarn", "start"]

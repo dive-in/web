@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  # db:
+  #   image: "postgres"
+  #   container_name: "db"
+  #   environment:
+  #    - POSTGRES_USER=${}
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+      args:
+        - port=8050
+    volumes:
+      - ./api/src:/app/src
+      - ./api/dist:/app/dist
+      - /app/node_modules
+    ports:
+      - "8050:8050"
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.dev
+      args:
+        - port=3000
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "api"
