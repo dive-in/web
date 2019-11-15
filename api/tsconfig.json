@@ -6,7 +6,9 @@
       "preserveConstEnums": true,
       "sourceMap": true,
       "allowSyntheticDefaultImports": true,
-      "outDir": "dist"
+      "outDir": "dist",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.test.ts"],
