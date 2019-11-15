@@ -1,17 +1,23 @@
 version: '3'
 
 services:
-  # db:
-  #   image: "postgres"
-  #   container_name: "db"
-  #   environment:
-  #    - POSTGRES_USER=${}
+  db:
+    container_name: db
+    image: postgres:10.4
+    ports:
+      - "35432:5432"
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_pass
+      POSTGRES_DB: db
   api:
+    container_name: api
     build:
       context: ./api
       dockerfile: Dockerfile.dev
-      args:
-        - port=8050
+    environment:
+      - PORT=8050
+      - DATABASE_URL=postgres://dev_user:dev_pass@db:5432/db
     volumes:
       - ./api/src:/app/src
       - ./api/dist:/app/dist
@@ -19,6 +25,7 @@ services:
     ports:
       - "8050:8050"
   front:
+    container_name: front
     build:
       context: ./front
       dockerfile: Dockerfile.dev
