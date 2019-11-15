@@ -25,7 +25,7 @@ services:
       - TYPEORM_LOGGING=true
       - TYPEORM_ENTITIES=./dist/entities/*.js
       - TYPEORM_MIGRATIONS=./dist/migrations/*.js
-      - TYPEORM_MIGRATIONS_DIR=./dist/migrations
+      - TYPEORM_MIGRATIONS_DIR=./src/migrations
     volumes:
       - ./api/src:/app/src
       - ./api/dist:/app/dist
