@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint . --ext .js,.ts",
+    "lint": "eslint . --ext .ts",
     "start": "concurrently -k -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"yarn watch-ts\" \"nodemon ./dist/index.js\"",
     "watch-ts": "tsc -w",
     "build": "tsc",
     "serve": "NODE_PATH=dist/ node ./dist/index.js",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migrate": "yarn typeorm migration:run"
+    "migrate": "ts-node -r tsconfig-paths/register ./src/scripts/runMigrations.ts",
+    "migrate:empty": "yarn typeorm migration:create",
+    "migrate:generate": "yarn typeorm migration:generate"
   },
   "repository": {
     "type": "git",
@@ -49,6 +51,8 @@
     "eslint-plugin-prettier": "^3.1.1",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1",
+    "ts-node": "^8.5.2",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.2"
   }
 }
