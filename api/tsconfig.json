@@ -5,10 +5,9 @@
       "removeComments": true,
       "preserveConstEnums": true,
       "sourceMap": true,
-      "baseUrl": "src",
       "allowSyntheticDefaultImports": true,
       "outDir": "dist"
   },
   "include": ["src/**/*"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["**/*.test.ts"],
 }
