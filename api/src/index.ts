@@ -1,15 +1,26 @@
+import 'reflect-metadata';
 import * as Koa from 'koa';
 import * as logger from 'koa-logger';
 import * as json from 'koa-json';
+import { createConnection } from 'typeorm';
+import { ApolloServer } from 'apollo-server-koa';
+import { buildSchema } from 'type-graphql';
 
-const app = new Koa();
+(async () => {
+  const app = new Koa();;
 
-app.use(logger());
-app.use(json());
+  await createConnection();
 
-const port = process.env.PORT ?? 8080;
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: []
+    }),
+    context: ({ req, res }) => ({ req, res })
+  });
 
-app.listen(port, () => {
-  // TODO: replace with actual logger
-  console.log(`Server running at port ${port}`);
-});
+  apolloServer.applyMiddleware({ app, cors: false });
+
+  app.listen(4000, () => {
+    console.log('express server started');
+  });
+})();
