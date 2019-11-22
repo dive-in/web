@@ -12,4 +12,6 @@
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.test.ts"],
+  "types": ["jest"],
+  "typeRoots": ["./src/types", "node_modules/@types"]
 }
