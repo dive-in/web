@@ -1,8 +1,8 @@
-import { IMiddleware } from 'koa-router';
+import { Middleware } from '@koa/router';
 import UserService from '../../services/user';
 
 export interface Dependencies {
   userService: UserService;
 }
 
-export type UserControllerMiddleware = IMiddleware<{}, Dependencies>;
+export type UserControllerMiddleware = Middleware<{}, Dependencies>;
