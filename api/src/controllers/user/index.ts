@@ -24,7 +24,7 @@ const injectDependencies = (): Router.Middleware<{}, Dependencies> => async (
 userController.use(injectDependencies());
 
 /**
- * @api {get} /users/authenticate Authenticate user with Facebook accessTokene
+ * @api {get} /users/authenticate Authenticate user with Facebook accessToken
  * @apiName authenticateUser
  * @apiGroup users
  *
