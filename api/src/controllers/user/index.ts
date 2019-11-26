@@ -6,7 +6,7 @@ import ResponseBody from '../../types/ResponseBody';
 import { Dependencies, UserControllerMiddleware } from './types';
 import { User as IUser } from '../../services/user/types';
 import UserService from '../../services/user';
-import validationMiddleware from '../../middelware/validation';
+import validationMiddleware from '../../middleware/validation';
 
 const userController = new Router<{}, Dependencies>();
 
