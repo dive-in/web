@@ -5,7 +5,7 @@ import ResponseBody from '../types/ResponseBody';
 const validationMiddleware = <T>(
   validationSchema: ObjectSchema<T>
 ): Middleware => async (ctx, next): Promise<void> => {
-  const body = ctx.body as T;
+  const body = ctx.request.body as T;
 
   const { error } = validationSchema.validate(body);
 
