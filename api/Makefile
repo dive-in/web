@@ -11,3 +11,6 @@ empty_migration:
 
 generate_migrations:
 	docker exec -it ${CONTAINER_NAME} yarn migrate:generate
+
+generate_docs:
+	docker exec -it ${CONTAINER_NAME} yarn docs
