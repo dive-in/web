@@ -13,6 +13,7 @@ import createDatabaseConnection from './config/database';
 import userController from './controllers/user';
 
 const app = new Koa();
+
 app.use(logger());
 app.use(json());
 app.use(bodyParser());
@@ -35,7 +36,7 @@ app.listen(port, async () => {
     }),
     context: ({ req, res }) => ({ req, res })
   });
-  apolloServer.applyMiddleware({ app, cors: false });
+  apolloServer.applyMiddleware({ app: app as any, cors: false });
   // TODO: replace with actual logger
   console.log(`Server running at port ${port}`);
 });
