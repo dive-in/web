@@ -5,10 +5,13 @@
       "removeComments": true,
       "preserveConstEnums": true,
       "sourceMap": true,
-      "baseUrl": "src",
       "allowSyntheticDefaultImports": true,
-      "outDir": "dist"
+      "outDir": "dist",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
   },
   "include": ["src/**/*"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["**/*.test.ts"],
+  "types": ["jest"],
+  "typeRoots": ["./src/types", "node_modules/@types"]
 }
