@@ -11,6 +11,7 @@ import * as serve from 'koa-static';
 import { resolve } from 'path';
 import createDatabaseConnection from './config/database';
 import userController from './controllers/user';
+import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 
 const app = new Koa();
 
@@ -32,9 +33,9 @@ app.listen(port, async () => {
   await createDatabaseConnection();
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: []
+      resolvers: [HelloWorldResolver],
     }),
-    context: ({ req, res }) => ({ req, res })
+    context: ({ req, res }) => ({ req, res }),
   });
   apolloServer.applyMiddleware({ app: app as any, cors: false });
   // TODO: replace with actual logger
