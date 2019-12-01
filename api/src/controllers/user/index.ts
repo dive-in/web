@@ -7,6 +7,7 @@ import { Dependencies, UserControllerMiddleware } from './types';
 import { User as IUser } from '../../services/user/types';
 import UserService from '../../services/user';
 import validationMiddleware from '../../middleware/validation';
+import verifyTokenMiddleware from '../../middleware/jwt';
 
 const userController = new Router<{}, Dependencies>();
 
@@ -24,7 +25,7 @@ const injectDependencies = (): Router.Middleware<{}, Dependencies> => async (
 userController.use(injectDependencies());
 
 /**
- * @api {get} /users/authenticate Authenticate user with Facebook accessToken
+ * @api {post} /users/authenticate Authenticate user with Facebook accessToken
  * @apiName authenticateUser
  * @apiGroup users
  *
@@ -83,5 +84,7 @@ userController.post(
   validationMiddleware(authenticateUserSchema),
   authenticateUser
 );
+
+userController.use(verifyTokenMiddleware);
 
 export default userController;
