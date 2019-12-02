@@ -1,13 +1,17 @@
+import 'reflect-metadata';
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import * as logger from 'koa-logger';
 import * as bodyParser from 'koa-bodyparser';
 import * as json from 'koa-json';
+import { ApolloServer } from 'apollo-server-koa';
+import { buildSchema } from 'type-graphql';
 import * as mount from 'koa-mount';
 import * as serve from 'koa-static';
 import { resolve } from 'path';
 import createDatabaseConnection from './config/database';
 import userController from './controllers/user';
+import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 
 const app = new Koa();
 
@@ -27,6 +31,13 @@ const port = process.env.PORT ?? 8080;
 
 app.listen(port, async () => {
   await createDatabaseConnection();
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloWorldResolver],
+    }),
+    context: ({ req, res }) => ({ req, res }),
+  });
+  apolloServer.applyMiddleware({ app: app as any, cors: false });
   // TODO: replace with actual logger
   console.log(`Server running at port ${port}`);
 });
