@@ -31,15 +31,15 @@ restaurantController.use(injectDependencies());
 type GetNearestRestaurantsQueryParams = Coordinate;
 
 /**
- * @api {get} /restaurants/ Authenticate user with Facebook accessToken
+ * @api {get} /restaurants?latitude=:latitude&longitude=:longitude Get 3 nearest restaurants based on latitude and longitude
  * @apiName getNearestRestaurants
- * @apiGroup restaurants
+ * @apiGroup Restaurants
  *
- * @apiParam {query} {String} latitude The user's latitude.
- * @apiParam {query} {String} longitude The user's longitude..
+ * @apiParam (Query params) {String} latitude The user's latitude.
+ * @apiParam (Query params) {String} longitude The user's longitude.
  *
  * @apiSuccess {Number} status The 2XX status message.
- * @apiSuccess {Array<Restaurant>} message The array of closest restaurants.
+ * @apiSuccess {Restaurant[]} message The array of closest restaurants.
  *
  * @apiError {Number} status The status code of the error. <code>400</code> means the body parameters were invalid. <code>500</code> means the database operation failed.
  * @apiError {String} message The message explaining more precisely what happened.
