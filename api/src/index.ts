@@ -12,6 +12,7 @@ import { resolve } from 'path';
 import createDatabaseConnection from './config/database';
 import userController from './controllers/user';
 import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
+import restaurantController from './controllers/restaurant';
 
 const app = new Koa();
 
@@ -22,6 +23,11 @@ app.use(bodyParser());
 const router = new Router();
 
 router.use('/users', userController.routes(), userController.allowedMethods());
+router.use(
+  '/restaurants',
+  restaurantController.routes(),
+  restaurantController.allowedMethods()
+);
 
 app.use(mount('/api', router.routes()));
 
