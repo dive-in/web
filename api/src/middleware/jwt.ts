@@ -14,7 +14,7 @@ const verifyTokenMiddleware: Middleware = async (ctx, next) => {
 
     const response: ResponseBody<string> = {
       status: 403,
-      message: 'User not authenticated',
+      payload: 'User not authenticated',
     };
 
     ctx.body = response;

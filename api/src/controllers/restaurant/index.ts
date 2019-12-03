@@ -50,7 +50,7 @@ const getNearestRestaurants: RestaurantControllerMiddleware = async ctx => {
   if (!latitude || !longitude) {
     const errorBody: ResponseBody<string> = {
       status: 400,
-      message: 'Latitude or longitude is missing',
+      payload: 'Latitude or longitude is missing',
     };
 
     ctx.status = 400;
@@ -71,7 +71,7 @@ const getNearestRestaurants: RestaurantControllerMiddleware = async ctx => {
 
     const response: ResponseBody<Restaurant[]> = {
       status: 200,
-      message: nearestRestaurants,
+      payload: nearestRestaurants,
     };
 
     ctx.status = 200;
@@ -82,7 +82,7 @@ const getNearestRestaurants: RestaurantControllerMiddleware = async ctx => {
     const errorBody: ResponseBody<string> = {
       status: 500,
       // TODO: Redefine the 500 messages
-      message: 'An error occured. Please try again later.',
+      payload: 'An error occured. Please try again later.',
     };
 
     ctx.body = errorBody;

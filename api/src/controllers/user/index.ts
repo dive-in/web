@@ -54,7 +54,7 @@ const authenticateUser: UserControllerMiddleware = async ctx => {
 
     const response: ResponseBody<string> = {
       status: 200,
-      message: token,
+      payload: token,
     };
 
     ctx.body = response;
@@ -63,7 +63,7 @@ const authenticateUser: UserControllerMiddleware = async ctx => {
 
     const response: ResponseBody<string> = {
       status: 500,
-      message: 'An error occurred. Please try again.',
+      payload: 'An error occurred. Please try again.',
     };
 
     ctx.body = response;
