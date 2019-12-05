@@ -11,7 +11,7 @@ import verifyTokenMiddleware from '../../middleware/jwt';
 
 const userController = new Router<{}, Dependencies>();
 
-const injectDependencies = (): Router.Middleware<{}, Dependencies> => async (
+const injectDependencies = (): UserControllerMiddleware => async (
   ctx,
   next
 ): Promise<void> => {
@@ -27,7 +27,7 @@ userController.use(injectDependencies());
 /**
  * @api {post} /users/authenticate Authenticate user with Facebook accessToken
  * @apiName authenticateUser
- * @apiGroup users
+ * @apiGroup Users
  *
  * @apiParam {String} accessToken The Facebook access token.
  * @apiParam {String} firstName The first name of the user, retrieved from the Facebook metadata.
@@ -54,7 +54,7 @@ const authenticateUser: UserControllerMiddleware = async ctx => {
 
     const response: ResponseBody<string> = {
       status: 200,
-      message: token,
+      payload: token,
     };
 
     ctx.body = response;
@@ -63,7 +63,7 @@ const authenticateUser: UserControllerMiddleware = async ctx => {
 
     const response: ResponseBody<string> = {
       status: 500,
-      message: 'An error occurred. Please try again.',
+      payload: 'An error occurred. Please try again.',
     };
 
     ctx.body = response;

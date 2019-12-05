@@ -18,7 +18,7 @@ const validationMiddleware = <T>(
 
   const response: ResponseBody<string> = {
     status: 400,
-    message: 'Invalid request body',
+    payload: 'Invalid request body',
   };
 
   ctx.body = response;
