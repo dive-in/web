@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import Restaurant from './Restaurant';
 import Shift from './Shift';
+import Order from './Order';
 
 @Entity()
 export default class RestaurantTable {
@@ -21,4 +28,10 @@ export default class RestaurantTable {
     shift => shift.restaurantTables
   )
   shift: Restaurant;
+
+  @OneToMany(
+    type => Order,
+    order => order.restaurantTable
+  )
+  orders: Order[];
 }

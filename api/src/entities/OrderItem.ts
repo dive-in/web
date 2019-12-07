@@ -4,8 +4,10 @@ import {
   Column,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import MenuItem from './MenuItem';
+import Order from './Order';
 
 @Entity()
 export default class OrderItem {
@@ -21,4 +23,10 @@ export default class OrderItem {
   )
   @JoinColumn()
   menuItem: MenuItem;
+
+  @ManyToOne(
+    type => Order,
+    order => order.orderItems
+  )
+  order: Order;
 }
