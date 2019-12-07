@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import OrderItem from './OrderItem';
 import RestaurantTable from './RestaurantTable';
+import User from './User';
 
 @Entity()
 export default class Order {
@@ -26,4 +27,11 @@ export default class Order {
   )
   @JoinColumn()
   restaurantTable: RestaurantTable;
+
+  @ManyToOne(
+    type => User,
+    user => user.orders
+  )
+  @JoinColumn()
+  user: User;
 }
