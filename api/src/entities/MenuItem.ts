@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 import Category from './Category';
+import OrderItem from './OrderItem';
 
 @Entity()
 export default class MenuItem {
@@ -31,4 +38,10 @@ export default class MenuItem {
     category => category.menuItems
   )
   category: Category;
+
+  @OneToOne(
+    type => OrderItem,
+    orderItem => orderItem.menuItem
+  )
+  orderItem: OrderItem;
 }
