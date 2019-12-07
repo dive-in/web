@@ -14,3 +14,6 @@ generate_migrations:
 
 generate_docs:
 	docker exec -it ${CONTAINER_NAME} yarn docs
+
+revert_migration:
+	docker exec -it ${CONTAINER_NAME} yarn migrate:revert
