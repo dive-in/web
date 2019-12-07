@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import RestaurantTable from './RestaurantTable';
+import Menu from './Menu';
 
 @Entity()
 export default class Restaurant {
@@ -34,4 +42,11 @@ export default class Restaurant {
     }
   )
   tables: RestaurantTable[];
+
+  @OneToOne(
+    type => Menu,
+    menu => menu.restaurant
+  )
+  @JoinColumn()
+  menu: Menu;
 }
