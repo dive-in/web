@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import Restaurant from './Restaurant';
 import Shift from './Shift';
@@ -31,9 +31,9 @@ export default class Employee {
   )
   restaurant: Restaurant;
 
-  @ManyToMany(
+  @OneToMany(
     type => Shift,
-    shift => shift.employees
+    shift => shift.employee
   )
   shifts: Shift[];
 }

@@ -2,11 +2,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToMany,
-  JoinColumn,
-  JoinTable,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import Employee from './Employee';
+import RestaurantTable from './RestaurantTable';
 
 @Entity()
 export default class Shift {
@@ -19,11 +19,15 @@ export default class Shift {
   @Column({ type: 'timestamp' })
   endDate: Date;
 
-  @ManyToMany(
+  @ManyToOne(
     type => Employee,
-    employee => employee.shifts,
-    { cascade: true }
+    employee => employee.shifts
   )
-  @JoinTable()
-  employees: Employee[];
+  employee: Employee;
+
+  @OneToMany(
+    type => RestaurantTable,
+    restaurantTable => restaurantTable.shift
+  )
+  restaurantTables: RestaurantTable[];
 }
