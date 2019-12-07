@@ -1,12 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  OneToMany,
+} from 'typeorm';
 import Menu from './Menu';
+import MenuItem from './MenuItem';
 
 @Entity()
 export default class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @ManyToOne(
@@ -14,4 +21,10 @@ export default class Category {
     menu => menu.categories
   )
   menu: Menu;
+
+  @OneToMany(
+    type => MenuItem,
+    menuItem => menuItem.category
+  )
+  menuItems: MenuItem[];
 }
