@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import RestaurantTable from './RestaurantTable';
 import Menu from './Menu';
+import Employee from './Employee';
 
 @Entity()
 export default class Restaurant {
@@ -49,4 +50,10 @@ export default class Restaurant {
   )
   @JoinColumn()
   menu: Menu;
+
+  @OneToMany(
+    type => Employee,
+    employee => employee.restaurant
+  )
+  employees: Employee[];
 }

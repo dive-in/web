@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  Column,
-  ManyToOne,
-} from 'typeorm';
-import Restaurant from './Restaurant';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import Category from './Category';
 
 @Entity()
