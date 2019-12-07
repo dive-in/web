@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+} from 'typeorm';
 import Restaurant from './Restaurant';
+import Shift from './Shift';
 
 @Entity()
 export default class Employee {
@@ -23,4 +30,10 @@ export default class Employee {
     restaurant => restaurant.employees
   )
   restaurant: Restaurant;
+
+  @ManyToMany(
+    type => Shift,
+    shift => shift.employees
+  )
+  shifts: Shift[];
 }
