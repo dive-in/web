@@ -18,7 +18,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migrate": "ts-node -r tsconfig-paths/register ./src/scripts/runMigrations.ts",
     "migrate:empty": "yarn typeorm migration:create",
-    "migrate:generate": "yarn typeorm migration:generate"
+    "migrate:generate": "yarn typeorm migration:generate",
+    "migrate:revert": "yarn typeorm migration:revert"
   },
   "repository": {
     "type": "git",
