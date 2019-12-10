@@ -1,7 +1,6 @@
 import * as Router from '@koa/router';
-import { getManager } from 'typeorm';
 import { object, string } from '@hapi/joi';
-import User from '../../entities/User';
+import Container from 'typedi';
 import ResponseBody from '../../types/ResponseBody';
 import { Dependencies, UserControllerMiddleware } from './types';
 import { User as IUser } from '../../services/user/types';
@@ -15,9 +14,7 @@ const injectDependencies = (): UserControllerMiddleware => async (
   ctx,
   next
 ): Promise<void> => {
-  const userRepository = getManager().getRepository(User);
-
-  ctx.userService = UserService.getInstance(userRepository);
+  ctx.userService = Container.get(UserService);
 
   await next();
 };

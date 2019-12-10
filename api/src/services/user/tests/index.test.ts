@@ -32,7 +32,7 @@ signMock.mockReturnValue('jsonwebtoken');
 process.env.PRIVATE_KEY = 'privatekey';
 
 describe('UserService', () => {
-  const userService = UserService.getInstance(
+  const userService = new UserService(
     (mockUserRepository as unknown) as Repository<User>
   );
 

@@ -1,20 +1,15 @@
 import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
+import { Service } from 'typedi';
+import { InjectRepository } from 'typeorm-typedi-extensions';
 import User from '../../entities/User';
 import { User as IUser } from './types';
 
+@Service()
 export default class UserService {
-  private constructor(private userRepository: Repository<User>) {}
-
-  private static instance: UserService = null;
-
-  static getInstance(userRepository: Repository<User>): UserService {
-    if (!this.instance) {
-      this.instance = new UserService(userRepository);
-    }
-
-    return this.instance;
-  }
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>
+  ) {}
 
   async saveOrUpdate(user: IUser): Promise<User> {
     let userEntity = await this.userRepository.findOne({
