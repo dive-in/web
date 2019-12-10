@@ -12,10 +12,12 @@ import createDatabaseConnection from './config/database';
 import UserController from './controllers/user';
 import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 import RestaurantController from './controllers/restaurant';
+import checkAuthorization from './utils/authorization';
 
 useContainer(Container);
 
 const app = createKoaServer({
+  authorizationChecker: checkAuthorization,
   routePrefix: 'api',
   controllers: [UserController, RestaurantController],
 });
