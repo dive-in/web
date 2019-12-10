@@ -3,7 +3,7 @@ import { sign } from 'jsonwebtoken';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import User from '../../entities/User';
-import { User as IUser } from './types';
+import AuthenticateUser from './models/AuthenticateUser';
 
 @Service()
 export default class UserService {
@@ -11,7 +11,7 @@ export default class UserService {
     @InjectRepository(User) private userRepository: Repository<User>
   ) {}
 
-  async saveOrUpdate(user: IUser): Promise<User> {
+  async saveOrUpdate(user: AuthenticateUser): Promise<User> {
     let userEntity = await this.userRepository.findOne({
       email: user.email,
     });

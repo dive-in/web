@@ -1,18 +1,12 @@
-import { object, string } from '@hapi/joi';
-import { Post, Body, JsonController, UseBefore } from 'routing-controllers';
+import {
+  Post,
+  Body,
+  JsonController,
+  InternalServerError,
+} from 'routing-controllers';
 import ResponseBody from '../../types/ResponseBody';
-import { User as IUser } from '../../services/user/types';
 import UserService from '../../services/user';
-import validationMiddleware from '../../middleware/validation';
-
-const authenticateUserSchema = object<IUser>({
-  accessToken: string().required(),
-  firstName: string().required(),
-  lastName: string().required(),
-  email: string()
-    .required()
-    .email(),
-});
+import AuthenticateUser from '../../services/user/models/AuthenticateUser';
 
 @JsonController('/users')
 class UserController {
@@ -35,9 +29,8 @@ class UserController {
    * @apiError {String} message The message explaining more precisely what happened.
    */
   @Post('/authenticate')
-  @UseBefore(validationMiddleware(authenticateUserSchema))
   async authenticate(
-    @Body({ required: true }) user: IUser
+    @Body({ required: true, validate: true }) user: AuthenticateUser
   ): Promise<ResponseBody<string>> {
     try {
       const newUser = await this.userService.saveOrUpdate(user);
@@ -54,10 +47,7 @@ class UserController {
 
       return response;
     } catch (e) {
-      return {
-        status: 500,
-        payload: 'An error occurred. Please try again.',
-      };
+      throw new InternalServerError('An error occured. Please try again');
     }
   }
 }

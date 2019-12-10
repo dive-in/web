@@ -3,8 +3,7 @@ import { sign } from 'jsonwebtoken';
 import { Repository } from 'typeorm';
 import UserService from '../index';
 import User from '../../../entities/User';
-
-import { User as IUser } from '../types';
+import AuthenticateUser from '../models/AuthenticateUser';
 
 jest.mock('jsonwebtoken');
 
@@ -45,7 +44,7 @@ describe('UserService', () => {
     it('should create new user if user does not exist', async () => {
       mockUserRepository.findOne.mockReturnValue(undefined);
 
-      const user: IUser = {
+      const user: AuthenticateUser = {
         accessToken: 'token',
         firstName: 'First',
         lastName: 'Last',
@@ -76,7 +75,7 @@ describe('UserService', () => {
 
       mockUserRepository.findOne.mockReturnValue(mockUser);
 
-      const user: IUser = {
+      const user: AuthenticateUser = {
         accessToken: 'token',
         firstName: 'First',
         lastName: 'Last',
