@@ -1,17 +1,17 @@
 import {
   JsonController,
-  UseBefore,
   Get,
   QueryParam,
+  Authorized,
+  InternalServerError,
 } from 'routing-controllers';
 import Restaurant from '../../entities/Restaurant';
 import RestaurantService from '../../services/restaurant';
 import { Coordinate } from '../../services/location/types';
 import ResponseBody from '../../types/ResponseBody';
-import verifyTokenMiddleware from '../../middleware/jwt';
 
 @JsonController('/restaurants')
-@UseBefore(verifyTokenMiddleware)
+@Authorized()
 class RestaurantController {
   constructor(private restaurantService: RestaurantService) {}
 
@@ -26,7 +26,7 @@ class RestaurantController {
    * @apiSuccess {Number} status The 2XX status message.
    * @apiSuccess {Restaurant[]} message The array of closest restaurants.
    *
-   * @apiError {Number} status The status code of the error. <code>400</code> means the body parameters were invalid. <code>500</code> means the database operation failed.
+   * @apiError {String} name The name of the error thrown.
    * @apiError {String} message The message explaining more precisely what happened.
    */
   @Get('/')
@@ -51,13 +51,7 @@ class RestaurantController {
 
       return response;
     } catch (e) {
-      const errorBody: ResponseBody<string> = {
-        status: 500,
-        // TODO: Redefine the 500 messages
-        payload: 'An error occured. Please try again later.',
-      };
-
-      return errorBody;
+      throw new InternalServerError('An error occurred. Please try again.');
     }
   }
 }
