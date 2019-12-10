@@ -25,8 +25,12 @@ class UserController {
    * @apiSuccess {Number} status The 2XX status message.
    * @apiSuccess {String} message The JWT token to be used for authentication.
    *
-   * @apiError {Number} status The status code of the error. <code>400</code> means the body parameters were invalid. <code>500</code> means the database operation failed.
-   * @apiError {String} message The message explaining more precisely what happened.
+   * @apiError (Error 400) {BadRequestError} name The request body is invalid.
+   * @apiError (Error 400) {String} message A descriptive message of the error.
+   * @apiError (Error 400) {Object[]} errors An array of error objects indicating the validation errors for each field.
+   *
+   * @apiError (Error 500) {InternalServerError} name An internal error occurred, probably during database connection.
+   * @apiError (Error 500) {String} message The message explaining more precisely what happened.
    */
   @Post('/authenticate')
   async authenticate(
