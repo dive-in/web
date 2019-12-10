@@ -1,19 +1,9 @@
+import { Service } from 'typedi';
 import { Coordinate } from './types';
 
+@Service()
 export default class LocationService {
-  private constructor() {}
-
-  private static instance: LocationService = null;
-
   private static EARTH_RADIUS = 6371e3;
-
-  static getInstance(): LocationService {
-    if (!this.instance) {
-      this.instance = new LocationService();
-    }
-
-    return this.instance;
-  }
 
   private static toRadians(angle: number): number {
     return Math.PI * (angle / 180);

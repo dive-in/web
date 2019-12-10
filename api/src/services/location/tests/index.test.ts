@@ -2,7 +2,7 @@ import LocationService from '../index';
 import { Coordinate } from '../types';
 
 describe('LocationService', () => {
-  const locationService = LocationService.getInstance();
+  const locationService = new LocationService();
   describe('getDistanceBetween', () => {
     it('should properly calculate air distance on the globe between two coordinates', () => {
       const firstCoordinate: Coordinate = {
