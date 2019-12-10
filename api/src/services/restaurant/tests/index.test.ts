@@ -78,7 +78,7 @@ const mockLocationService: LocationService = {
 };
 
 describe('RestaurantService', () => {
-  const restaurantService = RestaurantService.getInstance(
+  const restaurantService = new RestaurantService(
     (mockRestaurantRepository as unknown) as Repository<Restaurant>,
     mockLocationService
   );

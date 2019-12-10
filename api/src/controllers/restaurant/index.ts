@@ -1,8 +1,8 @@
 import * as Router from '@koa/router';
 import { getManager } from 'typeorm';
+import Container from 'typedi';
 import { Dependencies, RestaurantControllerMiddleware } from './types';
 import Restaurant from '../../entities/Restaurant';
-import LocationService from '../../services/location';
 import RestaurantService from '../../services/restaurant';
 import { Coordinate } from '../../services/location/types';
 import ResponseBody from '../../types/ResponseBody';
@@ -14,13 +14,7 @@ const injectDependencies = (): RestaurantControllerMiddleware => async (
   ctx,
   next
 ): Promise<void> => {
-  const restaurantRepository = getManager().getRepository(Restaurant);
-  const locationService = LocationService.getInstance();
-
-  ctx.restaurantService = RestaurantService.getInstance(
-    restaurantRepository,
-    locationService
-  );
+  ctx.restaurantService = Container.get(RestaurantService);
 
   await next();
 };
