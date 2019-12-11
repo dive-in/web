@@ -1,90 +1,59 @@
-import * as Router from '@koa/router';
-import { getManager } from 'typeorm';
-import { object, string } from '@hapi/joi';
-import User from '../../entities/User';
+import {
+  Post,
+  Body,
+  JsonController,
+  InternalServerError,
+} from 'routing-controllers';
 import ResponseBody from '../../types/ResponseBody';
-import { Dependencies, UserControllerMiddleware } from './types';
-import { User as IUser } from '../../services/user/types';
 import UserService from '../../services/user';
-import validationMiddleware from '../../middleware/validation';
-import verifyTokenMiddleware from '../../middleware/jwt';
+import AuthenticateUser from '../../services/user/models/AuthenticateUser';
 
-const userController = new Router<{}, Dependencies>();
+@JsonController('/users')
+class UserController {
+  constructor(private userService: UserService) {}
 
-const injectDependencies = (): UserControllerMiddleware => async (
-  ctx,
-  next
-): Promise<void> => {
-  const userRepository = getManager().getRepository(User);
+  /**
+   * @api {post} /users/authenticate Authenticate user with Facebook accessToken
+   * @apiName authenticateUser
+   * @apiGroup Users
+   *
+   * @apiParam {String} accessToken The Facebook access token.
+   * @apiParam {String} firstName The first name of the user, retrieved from the Facebook metadata.
+   * @apiParam {String} lastName The last name of the user, retrieved from the Facebook metadata.
+   * @apiParam {String} email The e-mail address of the user, retrieved from the Facebook metadata.
+   *
+   * @apiSuccess {Number} status The 2XX status message.
+   * @apiSuccess {String} message The JWT token to be used for authentication.
+   *
+   * @apiError (Error 400) {Number} status The request body is invalid.
+   * @apiError (Error 400) {String} message A descriptive message of the error.
+   * @apiError (Error 400) {ValidationError[]} errors An array of error objects indicating the validation errors for each field.
+   *
+   * @apiError (Error 500) {Number} status An internal error occurred, probably during database connection.
+   * @apiError (Error 500) {String} message The message explaining more precisely what happened.
+   */
+  @Post('/authenticate')
+  async authenticate(
+    @Body({ required: true, validate: true }) user: AuthenticateUser
+  ): Promise<ResponseBody<string>> {
+    try {
+      const newUser = await this.userService.saveOrUpdate(user);
 
-  ctx.userService = UserService.getInstance(userRepository);
+      const token = this.userService.generateToken(
+        newUser.id,
+        user.accessToken
+      );
 
-  await next();
-};
+      const response: ResponseBody<string> = {
+        status: 200,
+        payload: token,
+      };
 
-userController.use(injectDependencies());
-
-/**
- * @api {post} /users/authenticate Authenticate user with Facebook accessToken
- * @apiName authenticateUser
- * @apiGroup Users
- *
- * @apiParam {String} accessToken The Facebook access token.
- * @apiParam {String} firstName The first name of the user, retrieved from the Facebook metadata.
- * @apiParam {String} lastName The last name of the user, retrieved from the Facebook metadata.
- * @apiParam {String} email The e-mail address of the user, retrieved from the Facebook metadata.
- *
- * @apiSuccess {Number} status The 2XX status message.
- * @apiSuccess {String} message The JWT token to be used for authentication.
- *
- * @apiError {Number} status The status code of the error. <code>400</code> means the body parameters were invalid. <code>500</code> means the database operation failed.
- * @apiError {String} message The message explaining more precisely what happened.
- */
-const authenticateUser: UserControllerMiddleware = async ctx => {
-  const body = ctx.request.body as IUser;
-
-  const { userService } = ctx;
-
-  try {
-    const newUser = await userService.saveOrUpdate(body);
-
-    const token = userService.generateToken(newUser.id, body.accessToken);
-
-    ctx.status = 200;
-
-    const response: ResponseBody<string> = {
-      status: 200,
-      payload: token,
-    };
-
-    ctx.body = response;
-  } catch (e) {
-    ctx.status = 500;
-
-    const response: ResponseBody<string> = {
-      status: 500,
-      payload: 'An error occurred. Please try again.',
-    };
-
-    ctx.body = response;
+      return response;
+    } catch (e) {
+      throw new InternalServerError('An error occured. Please try again');
+    }
   }
-};
+}
 
-const authenticateUserSchema = object<IUser>({
-  accessToken: string().required(),
-  firstName: string().required(),
-  lastName: string().required(),
-  email: string()
-    .required()
-    .email(),
-});
-
-userController.post(
-  '/authenticate',
-  validationMiddleware(authenticateUserSchema),
-  authenticateUser
-);
-
-userController.use(verifyTokenMiddleware);
-
-export default userController;
+export default UserController;
