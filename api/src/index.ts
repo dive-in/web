@@ -14,12 +14,19 @@ import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 import RestaurantController from './controllers/restaurant';
 import checkAuthorization from './utils/authorization';
 
+import './errors/override';
+
 useContainer(Container);
 
 const app = createKoaServer({
   authorizationChecker: checkAuthorization,
   routePrefix: 'api',
   controllers: [UserController, RestaurantController],
+  validation: {
+    validationError: {
+      target: false,
+    },
+  },
 });
 
 app.use(logger());
