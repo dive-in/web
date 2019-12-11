@@ -26,13 +26,13 @@ class RestaurantController {
    * @apiSuccess {Number} status The 2XX status message.
    * @apiSuccess {Restaurant[]} message The array of closest restaurants.
    *
-   * @apiError (Error 400) {ParamRequiredError} name One or more query parameters are missing.
+   * @apiError (Error 400) {Number} status One or more query parameters are missing.
    * @apiError (Error 400) {String} message A more detailed explanation of which query parameter(s) is(are) missing.
    *
-   * @apiError (Error 403) {NotAuthenticatedError} name Thrown when an authentication token is invalid and/or not provided.
+   * @apiError (Error 403) {Number} status Thrown when an authentication token is invalid and/or not provided.
    * @apiError (Error 403) {String} message Explaining the error in more detail.
    *
-   * @apiError (Error 500) {InternalServerError} name An internal error occurred, probably during database connection.
+   * @apiError (Error 500) {Number} status An internal error occurred, probably during database connection.
    * @apiError (Error 500) {String} message The message explaining more precisely what happened.
    */
   @Get('/')
