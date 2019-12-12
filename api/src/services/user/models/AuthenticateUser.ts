@@ -1,7 +1,9 @@
 import { IsString, IsEmail } from 'class-validator';
+import { IsFacebookAccessToken } from '../../../validators';
 
 class AuthenticateUser {
   @IsString()
+  @IsFacebookAccessToken()
   accessToken: string;
 
   @IsString()
