@@ -35,7 +35,7 @@ class RestaurantController {
    * @apiError (Error 403) {String} payload Explaining the error in more detail.
    *
    * @apiError (Error 500) {Number} status An internal error occurred, probably during database connection.
-   * @apiError (Error 500) {String} payload The payload explaining more precisely what happened.
+   * @apiError (Error 500) {String} payload The message explaining more precisely what happened.
    */
   @Get('/')
   async getNearestRestaurants(
