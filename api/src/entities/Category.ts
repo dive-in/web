@@ -24,7 +24,10 @@ export default class Category {
 
   @OneToMany(
     type => MenuItem,
-    menuItem => menuItem.category
+    menuItem => menuItem.category,
+    {
+      eager: true,
+    }
   )
   menuItems: MenuItem[];
 }
