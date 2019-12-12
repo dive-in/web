@@ -13,7 +13,6 @@ class IsFacebookAccessTokenConstraint implements ValidatorConstraintInterface {
     value: any,
     validationArguments?: ValidationArguments
   ): Promise<boolean> {
-    console.error(value);
     const url = 'https://graph.facebook.com/debug_token';
 
     try {
