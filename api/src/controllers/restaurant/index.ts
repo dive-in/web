@@ -4,11 +4,13 @@ import {
   QueryParam,
   Authorized,
   InternalServerError,
+  Param,
 } from 'routing-controllers';
 import Restaurant from '../../entities/Restaurant';
 import RestaurantService from '../../services/restaurant';
 import { Coordinate } from '../../services/location/types';
 import ResponseBody from '../../types/ResponseBody';
+import Menu from '../../entities/Menu';
 
 @JsonController('/restaurants')
 @Authorized()
@@ -59,6 +61,11 @@ class RestaurantController {
     } catch (e) {
       throw new InternalServerError('An error occurred. Please try again.');
     }
+  }
+
+  @Get('/:id/menu')
+  async getMenuForRestaurant(@Param('id') id: number): Promise<Menu> {
+    return this.restaurantService.getMenuForRestaurant(id);
   }
 }
 
