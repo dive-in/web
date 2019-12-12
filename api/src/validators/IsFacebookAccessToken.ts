@@ -14,10 +14,13 @@ class IsFacebookAccessTokenConstraint implements ValidatorConstraintInterface {
     validationArguments?: ValidationArguments
   ): Promise<boolean> {
     console.error(value);
-    const url = `https://graph.facebook.com/debug_token?input_token=${value}&access_token=${process.env.FACEBOOK_APP_ACCESS_TOKEN}`;
+    const url = 'https://graph.facebook.com/debug_token';
 
     try {
-      const response = await superAgent.get(url);
+      const response = await superAgent.get(url).query({
+        input_token: value,
+        access_token: process.env.FACEBOOK_APP_ACCESS_TOKEN,
+      });
       const responseBody = JSON.parse(response.text);
 
       return responseBody.data.is_valid;
