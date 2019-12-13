@@ -7,31 +7,33 @@ import {
 } from 'typeorm';
 import Restaurant from './Restaurant';
 import Shift from './Shift';
-import Order from './Order';
 
 @Entity()
-export default class RestaurantTable {
+export default class Employee {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  number: string;
+  name: string;
+
+  @Column({ unique: true, nullable: false })
+  username: string;
+
+  @Column()
+  password: string;
+
+  @Column()
+  photo: string;
 
   @ManyToOne(
     type => Restaurant,
-    restaurant => restaurant.tables
+    restaurant => restaurant.employees
   )
   restaurant: Restaurant;
 
-  @ManyToOne(
-    type => Shift,
-    shift => shift.restaurantTables
-  )
-  shift: Restaurant;
-
   @OneToMany(
-    type => Order,
-    order => order.restaurantTable
+    type => Shift,
+    shift => shift.employee
   )
-  orders: Order[];
+  shifts: Shift[];
 }

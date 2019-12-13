@@ -12,6 +12,8 @@ const mockRestaurants: Restaurant[] = [
     longitude: 15,
     tables: [],
     logoUrl: 'logo',
+    employees: [],
+    menu: null,
   },
   {
     id: 2,
@@ -20,6 +22,8 @@ const mockRestaurants: Restaurant[] = [
     longitude: 21,
     tables: [],
     logoUrl: 'logo',
+    employees: [],
+    menu: null,
   },
   {
     id: 3,
@@ -28,6 +32,8 @@ const mockRestaurants: Restaurant[] = [
     longitude: 100,
     tables: [],
     logoUrl: 'logo',
+    employees: [],
+    menu: null,
   },
   {
     id: 4,
@@ -36,6 +42,8 @@ const mockRestaurants: Restaurant[] = [
     longitude: 25,
     tables: [],
     logoUrl: 'logo',
+    employees: [],
+    menu: null,
   },
 ];
 
@@ -70,7 +78,7 @@ const mockLocationService: LocationService = {
 };
 
 describe('RestaurantService', () => {
-  const restaurantService = RestaurantService.getInstance(
+  const restaurantService = new RestaurantService(
     (mockRestaurantRepository as unknown) as Repository<Restaurant>,
     mockLocationService
   );

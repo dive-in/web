@@ -1,31 +1,19 @@
 import { Repository } from 'typeorm';
+import { Service, Inject } from 'typedi';
+import { InjectRepository } from 'typeorm-typedi-extensions';
 import Restaurant from '../../entities/Restaurant';
 import { Coordinate } from '../location/types';
 import LocationService from '../location';
 
+@Service()
 export default class RestaurantService {
   private static MAX_DISTANCE = 60;
 
-  private constructor(
+  constructor(
+    @InjectRepository(Restaurant)
     private restaurantRepository: Repository<Restaurant>,
     private locationService: LocationService
   ) {}
-
-  private static instance: RestaurantService = null;
-
-  static getInstance(
-    restaurantRepository: Repository<Restaurant>,
-    locationService: LocationService
-  ): RestaurantService {
-    if (!this.instance) {
-      this.instance = new RestaurantService(
-        restaurantRepository,
-        locationService
-      );
-    }
-
-    return this.instance;
-  }
 
   async getClosestRestaurantsTo(point: Coordinate): Promise<Restaurant[]> {
     const allRestaurants = await this.restaurantRepository.find();
