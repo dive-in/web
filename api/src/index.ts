@@ -11,7 +11,6 @@ import * as serve from 'koa-static';
 import { resolve } from 'path';
 import createDatabaseConnection from './config/database';
 import userController from './controllers/user';
-import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 import restaurantController from './controllers/restaurant';
 
 const app = new Koa();
@@ -39,7 +38,7 @@ app.listen(port, async () => {
   await createDatabaseConnection();
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloWorldResolver],
+      resolvers: [],
     }),
     context: ({ req, res }) => ({ req, res }),
   });
