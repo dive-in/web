@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Field } from 'type-graphql';
 import RestaurantTable from './RestaurantTable';
 
 @Entity()
@@ -9,6 +10,7 @@ export default class Restaurant {
   @Column({
     unique: true,
   })
+  @Field(() => String)
   name: string;
 
   @Column({
@@ -24,7 +26,20 @@ export default class Restaurant {
   @Column({
     nullable: true,
   })
+  @Field(() => String)
   logoUrl: string;
+
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String)
+  address: string;
+
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String)
+  phoneNumber: string;
 
   @OneToMany(
     type => RestaurantTable,
