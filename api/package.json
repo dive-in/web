@@ -41,7 +41,9 @@
     "koa-mount": "^4.0.0",
     "koa-static": "^5.0.0",
     "pg": "^7.12.1",
-    "typeorm": "^0.2.20"
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.20",
+    "typeorm-typedi-extensions": "^0.2.3"
   },
   "devDependencies": {
     "@types/hapi__joi": "^16.0.3",
