@@ -1,4 +1,5 @@
 import { Repository } from 'typeorm';
+import { NotFoundError } from 'routing-controllers';
 import Restaurant from '../../../entities/Restaurant';
 import RestaurantService from '../index';
 import LocationService from '../../location';
@@ -48,9 +49,11 @@ const mockRestaurants: Restaurant[] = [
 ];
 
 const find = jest.fn();
+const findOne = jest.fn();
 
 const mockRestaurantRepository = {
   find,
+  findOne,
 };
 
 const isDistanceLessThan: jest.Mock<
@@ -85,6 +88,7 @@ describe('RestaurantService', () => {
 
   beforeEach(() => {
     mockRestaurantRepository.find.mockClear();
+    mockRestaurantRepository.findOne.mockClear();
   });
 
   describe('getClosestRestaurantsTo', () => {
@@ -137,21 +141,64 @@ describe('RestaurantService', () => {
       expect(first.id).toEqual(2);
       expect(second.id).toEqual(1);
     });
+
+    it('should return empty array if there are no restaurants nearby', async () => {
+      mockRestaurantRepository.find.mockReturnValue(mockRestaurants);
+
+      const coordinate: Coordinate = {
+        latitude: 170,
+        longitude: 170,
+      };
+
+      const closestRestaurants = await restaurantService.getClosestRestaurantsTo(
+        coordinate
+      );
+
+      expect(closestRestaurants).toBeDefined();
+      expect(closestRestaurants).toHaveLength(0);
+    });
   });
 
-  it('should return empty array if there are no restaurants nearby', async () => {
-    mockRestaurantRepository.find.mockReturnValue(mockRestaurants);
+  describe('getMenuForRestaurant', () => {
+    it("should return the restaurant's menu when the restaurant exists", async () => {
+      const mockRestaurant: Restaurant = {
+        id: 1,
+        name: 'Test restaurant',
+        logoUrl: 'logo',
+        menu: {
+          id: 4,
+          categories: [],
+          restaurant: undefined,
+        },
+        tables: [],
+        employees: [],
+        latitude: 42.21,
+        longitude: 21.42,
+      };
 
-    const coordinate: Coordinate = {
-      latitude: 170,
-      longitude: 170,
-    };
+      mockRestaurant.menu.restaurant = mockRestaurant;
 
-    const closestRestaurants = await restaurantService.getClosestRestaurantsTo(
-      coordinate
-    );
+      mockRestaurantRepository.findOne.mockReturnValue(mockRestaurant);
 
-    expect(closestRestaurants).toBeDefined();
-    expect(closestRestaurants).toHaveLength(0);
+      const menu = await restaurantService.getMenuForRestaurant(1);
+
+      expect(mockRestaurantRepository.findOne).toHaveBeenCalledWith(1, {
+        relations: ['menu'],
+      });
+
+      expect(menu).toBeDefined();
+
+      expect(menu.id).toEqual(4);
+    });
+
+    it('should throw a NotFoundError if a restaurant with that id does not exist', async () => {
+      mockRestaurantRepository.findOne.mockReturnValue(undefined);
+
+      return expect(
+        restaurantService.getMenuForRestaurant(1)
+      ).rejects.toThrowError(
+        new NotFoundError('Restaurant with that ID does not exist')
+      );
+    });
   });
 });

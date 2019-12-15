@@ -15,7 +15,10 @@ export default class Menu {
 
   @OneToMany(
     type => Category,
-    category => category.menu
+    category => category.menu,
+    {
+      eager: true,
+    }
   )
   categories: Category[];
 }
