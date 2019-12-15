@@ -27,6 +27,7 @@ services:
       - TYPEORM_MIGRATIONS=./dist/migrations/*.js
       - TYPEORM_MIGRATIONS_DIR=./src/migrations
       - PRIVATE_KEY=devprivatesigningkey
+      - FACEBOOK_APP_ACCESS_TOKEN=457784034692995|25888d395a8b367feb7a079efaf5fca0
     volumes:
       - ./api/src:/app/src
       - ./api/dist:/app/dist
