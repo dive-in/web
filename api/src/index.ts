@@ -10,8 +10,9 @@ import { resolve } from 'path';
 import Container from 'typedi';
 import createDatabaseConnection from './config/database';
 import UserController from './controllers/user';
-import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 import RestaurantController from './controllers/restaurant';
+import OrderController from './controllers/order';
+import { HelloWorldResolver } from './resolvers/HelloWorldResolver';
 import checkAuthorization from './utils/authorization';
 
 import './errors/override';
@@ -21,7 +22,7 @@ useContainer(Container);
 const app = createKoaServer({
   authorizationChecker: checkAuthorization,
   routePrefix: 'api',
-  controllers: [UserController, RestaurantController],
+  controllers: [UserController, RestaurantController, OrderController],
   validation: {
     validationError: {
       target: false,

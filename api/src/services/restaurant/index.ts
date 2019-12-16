@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Service, Inject } from 'typedi';
+import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { NotFoundError } from 'routing-controllers';
 import Restaurant from '../../entities/Restaurant';
