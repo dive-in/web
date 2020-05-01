@@ -13,6 +13,11 @@ services:
       PGDATA: /data/postgres
     volumes:
        - postgres:/data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   api:
     container_name: api
     build:
@@ -34,6 +39,11 @@ services:
       - /app/node_modules
     ports:
       - "8050:8050"
+    healthcheck:
+      test: ["CMD-SHELL", "curl localhost:8050 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   front:
     container_name: front
     build:
@@ -48,6 +58,11 @@ services:
       - "3000:3000"
     depends_on:
       - "api"
+    healthcheck:
+      test: ["CMD-SHELL", "curl localhost:3000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
