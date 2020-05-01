@@ -6,8 +6,6 @@ ENV PORT=${port}
 
 WORKDIR /app
 
-RUN npm i -g yarn
-
 COPY package.json yarn.lock ./
 
 RUN yarn
