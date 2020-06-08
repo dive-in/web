@@ -1,0 +1,8 @@
+FROM golang:alpine
+RUN mkdir /build
+ADD . /build/
+WORKDIR /build
+RUN go get github.com/githubnemo/CompileDaemon
+EXPOSE ${PORT}
+ENTRYPOINT CompileDaemon --build="go build -o main ." --command=./main
+
