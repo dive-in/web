@@ -21,7 +21,7 @@ func TestHealthcheckControllerImpl_Ping(t *testing.T) {
 	router := utils.GetRouter(true)
 	controller := mockController()
 
-	endpoint := "/healthcheck/ping"
+	endpoint := "/v1/healthcheck/ping"
 
 	router.GET(endpoint, controller.Ping)
 
@@ -41,7 +41,7 @@ func TestHealthcheckControllerImpl_Ping(t *testing.T) {
 		return
 	}
 
-	if (body["message"] != "Online") {
+	if body["message"] != "Online" {
 		t.Errorf("failed, expected %v, got %v", "Online", body["message"])
 		return
 	}

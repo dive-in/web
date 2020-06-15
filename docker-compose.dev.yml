@@ -31,6 +31,10 @@ services:
       - ./api-go/:/build/
     ports:
       - "8050:8050"
+    depends_on:
+      - db
+    links:
+      - db
     # healthcheck:
     #   test: ["CMD-SHELL", "curl localhost:8050 || exit 1"]
     #   interval: 10s

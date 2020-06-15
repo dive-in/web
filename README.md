@@ -36,7 +36,7 @@ Or directly with docker-compose:
 
 This will start the following containers:
 
- The API on port 8050
+- The API on port 8050
 - The frontend management app on port 3000
 - The database on port 35432
 - The Postgres Admin on port 5050
