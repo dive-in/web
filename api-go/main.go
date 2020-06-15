@@ -10,11 +10,21 @@ func main() {
 
 	serviceContainer := controllers.GetServiceContainer()
 
-	healthcheckController := serviceContainer.GetHealthcheckController()
+	healthCheckController := serviceContainer.GetHealthcheckController()
+	restaurantController := serviceContainer.GetRestaurantController()
 
-	healthcheckRoutes := router.Group("/healthcheck")
+	routesV1 := router.Group("/v1")
 	{
-		healthcheckRoutes.GET("/ping", healthcheckController.Ping)
+		healthCheckRoutes := routesV1.Group("/healthcheck")
+		{
+			healthCheckRoutes.GET("/ping", healthCheckController.Ping)
+		}
+
+		restaurantRoutes := routesV1.Group("/restaurant")
+		{
+			restaurantRoutes.GET("/", restaurantController.GetNearestRestaurants)
+			restaurantRoutes.GET("/:id/menu", restaurantController.GetMenuForRestaurant)
+		}
 	}
 
 	if err := router.Run(); err != nil {
