@@ -3,6 +3,7 @@ package controllers
 import (
 	. "github.com/dive-in/web/api-go/controllers/healthcheck"
 	. "github.com/dive-in/web/api-go/controllers/restaurant"
+	. "github.com/dive-in/web/api-go/persistence"
 	. "github.com/dive-in/web/api-go/services/healthcheck"
 	. "github.com/dive-in/web/api-go/services/restaurant"
 )
@@ -15,7 +16,8 @@ type ServiceContainer interface {
 type ServiceContainerImpl struct{}
 
 func (_ ServiceContainerImpl) GetHealthcheckController() HealthcheckController {
-	healthcheckService := HealthcheckServiceImpl{}
+	databaseTemplate := DatabaseTemplateImpl{}
+	healthcheckService := HealthcheckServiceImpl{databaseTemplate}
 	controller := HealthcheckControllerImpl{healthcheckService}
 
 	return controller

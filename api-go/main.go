@@ -1,11 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"github.com/dive-in/web/api-go/controllers"
+	"github.com/dive-in/web/api-go/persistence"
 	"github.com/dive-in/web/api-go/utils"
 )
 
 func main() {
+	fmt.Println("Starting application...")
+
+	migrator := persistence.GetMigrator()
+	migrator.Migrate()
+
 	router := utils.GetRouter(false)
 
 	serviceContainer := controllers.GetServiceContainer()

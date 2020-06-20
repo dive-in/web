@@ -2,15 +2,24 @@ package healthcheck
 
 import (
 	"encoding/json"
-	. "github.com/dive-in/web/api-go/services/healthcheck"
+	"github.com/dive-in/web/api-go/models"
 	"github.com/dive-in/web/api-go/utils"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
+type HealthCheckServiceMock struct{}
+
+func (s HealthCheckServiceMock) Ping() models.HealthCheck {
+	return models.HealthCheck{
+		Message:    models.Success,
+		Components: []models.HealthComponent{},
+	}
+}
+
 func mockController() HealthcheckController {
-	healthcheckService := HealthcheckServiceImpl{}
+	healthcheckService := HealthCheckServiceMock{}
 	controller := HealthcheckControllerImpl{healthcheckService}
 
 	return controller
@@ -29,7 +38,7 @@ func TestHealthcheckControllerImpl_Ping(t *testing.T) {
 
 	router.ServeHTTP(w, req)
 
-	var body map[string]interface{}
+	var body models.HealthCheck
 
 	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
 		t.Errorf("failed, expected valid JSON body")
@@ -41,8 +50,8 @@ func TestHealthcheckControllerImpl_Ping(t *testing.T) {
 		return
 	}
 
-	if body["message"] != "Online" {
-		t.Errorf("failed, expected %v, got %v", "Online", body["message"])
+	if body.Message != models.Success {
+		t.Errorf("failed, expected %v, got %v", models.Success, body.Message)
 		return
 	}
 

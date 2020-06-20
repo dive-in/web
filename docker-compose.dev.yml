@@ -27,6 +27,11 @@ services:
       - PORT=8050
       - PRIVATE_KEY=devprivatesigningkey
       - FACEBOOK_APP_ACCESS_TOKEN=457784034692995|25888d395a8b367feb7a079efaf5fca0
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=dev_user
+      - DB_PASS=dev_pass
+      - DB_DATABASE_NAME=db
     volumes:
       - ./api-go/:/build/
     ports:
