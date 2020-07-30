@@ -1,15 +1,33 @@
 package healthcheck
 
-import "testing"
+import (
+	"github.com/dive-in/web/api-go/models"
+	"github.com/jinzhu/gorm"
+	"testing"
+)
+
+type DatabaseTemplateMock struct{}
+
+func (c DatabaseTemplateMock) GetDB() *gorm.DB {
+	return nil
+}
+
+func (c DatabaseTemplateMock) CheckHealth() models.HealthComponent {
+	return models.HealthComponent{
+		Name:   "Database",
+		Status: models.Success,
+	}
+}
 
 func TestHealthcheckServiceImpl_Ping(t *testing.T) {
-	service := HealthcheckServiceImpl{}
+	service := HealthcheckServiceImpl{DatabaseTemplateMock{}}
 
-	result := service.Ping()
+	health := service.Ping()
 
-	if result != nil {
-		t.Errorf("failed, expected %v, got %v", nil, result)
-	} else {
-		t.Logf("succeeded")
+	if health.Message != models.Success {
+		t.Errorf("Healthcheck failed. Incorrect health status")
+		return
+
 	}
+	t.Logf("Succeeded")
 }

@@ -1,40 +1,78 @@
 package persistence
 
 import (
+	"fmt"
+	"github.com/dive-in/web/api-go/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"os"
 )
 
 type DatabaseTemplate interface {
 	GetDB() *gorm.DB
+	CheckHealth() models.HealthComponent
 }
 
 type DatabaseTemplateImpl struct{}
 
-// Connects to the database and returns the new database connection
-// TODO 2020-06-14: RTFM https://gorm.io/docs/index.html
+const ConnectionString = "host=%s port=%s user=%s dbname=%s password=%s sslmode=disable"
+
+const DbHostEnvName = "DB_HOST"
+const DbPortEnvName = "DB_PORT"
+const DbUserEnvName = "DB_USER"
+const DbPassEnvName = "DB_PASS"
+const DbDatabaseEnvName = "DB_DATABASE_NAME"
+
+var host = os.Getenv(DbHostEnvName)
+var port = os.Getenv(DbPortEnvName)
+var username = os.Getenv(DbUserEnvName)
+var database = os.Getenv(DbDatabaseEnvName)
+var password = os.Getenv(DbPassEnvName)
+
+var db *gorm.DB
+var err error
+
 func (_ DatabaseTemplateImpl) GetDB() *gorm.DB {
-	db, err := gorm.Open("postgres", "host=db port=5432 user=dev_user dbname=db password=dev_pass sslmode=disable")
-	if err != nil {
-		panic(err.Error())
-	}
 	if db == nil {
-		panic("Database is not connected")
+		connectionString := fmt.Sprintf(ConnectionString, host, port, username, database, password)
+		db, err = gorm.Open("postgres", connectionString)
+		if err != nil {
+			panic(err.Error())
+		}
+		if db == nil {
+			panic("Database is not connected")
+		}
 	}
 	return db
 }
 
-// TODO 2020-06-14: This was used for testing purposes. Can be removed.
-//func test() {
-//em := models.Employee{
-//	Name:     "Test",
-//	Username: "test",
-//	Password: "test",
-//}
+func (_ DatabaseTemplateImpl) CheckHealth() models.HealthComponent {
+	health := models.HealthComponent{
+		Name:   "Database",
+		Status: models.Success,
+	}
 
-// CREATE TABLE...
-//	db.CreateTable(&em)
+	con, dbError := gorm.Open("postgres", fmt.Sprintf(ConnectionString, host, port, username, database, password))
+	if dbError != nil {
+		health.Error = dbError.Error()
+		health.Status = models.Failure
+	}
+	if con != nil {
+		closeError := con.Close()
+		if closeError != nil {
+			panic(closeError)
+		}
+	}
 
-// INSERT INTO ___ VALUES ___
-//db.Create(&em)
-//}
+	return health
+}
+
+var databaseTemplate DatabaseTemplate
+
+func GetConnection() *gorm.DB {
+	if databaseTemplate == nil {
+		databaseTemplate = DatabaseTemplateImpl{}
+	}
+
+	return databaseTemplate.GetDB()
+}

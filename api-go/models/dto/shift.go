@@ -1,11 +1,15 @@
 package dto
 
-import "time"
+import (
+	"github.com/jinzhu/gorm"
+	"time"
+)
 
 type Shift struct {
-	Id               int             `json:"id"`
+	gorm.Model
 	StartDate        time.Time       `json:"startDate"`
 	EndDate          time.Time       `json:"endDate"`
 	Employee         Employee        `json:"employee"`
+	EmployeeID       uint            `gorm:"column:employee_id"`
 	RestaurantTables RestaurantTable `json:"restaurantTables"`
 }

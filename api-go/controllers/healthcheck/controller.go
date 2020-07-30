@@ -15,12 +15,7 @@ type HealthcheckControllerImpl struct {
 }
 
 func (c HealthcheckControllerImpl) Ping(ctx *gin.Context) {
-	err := c.HealthcheckService.Ping()
+	response := c.HealthcheckService.Ping()
 
-	if err != nil {
-		ctx.Status(http.StatusInternalServerError)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{ "message": "Online" })
+	ctx.JSON(http.StatusOK, response)
 }
