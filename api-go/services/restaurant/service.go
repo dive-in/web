@@ -15,10 +15,10 @@ type RestaurantServiceImpl struct{}
 
 func (_ RestaurantServiceImpl) GetClosestRestaurantsTo(c *models.Coordinate) []dto.Restaurant {
 	fmt.Printf("Calling GetClosestRestaurantsTo for coordinates: %f, %f\n", c.Latitude, c.Longitude)
-	return []dto.Restaurant{{Id: 1, Name: "Test", Latitude: c.Latitude, Longitude: c.Longitude}}
+	return []dto.Restaurant{{Name: "Test", Latitude: c.Latitude, Longitude: c.Longitude}}
 }
 
 func (_ RestaurantServiceImpl) GetMenuForRestaurant(id int64) dto.Menu {
 	fmt.Printf("Calling GetMenuForRestaurant for restaurant id: %d", id)
-	return dto.Menu{Id: id}
+	return dto.Menu{}
 }

@@ -1,8 +1,10 @@
 package dto
 
+import "github.com/jinzhu/gorm"
+
 type Category struct {
-	Id        int64      `json:"id"`
-	Name      string     `json:"name"`
-	Menu      Menu       `json:"menu"`
+	gorm.Model
+	Name      string `json:"name"`
+	MenuID    uint
 	MenuItems []MenuItem `json:"menuItems"`
 }

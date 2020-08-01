@@ -1,7 +1,9 @@
 package dto
 
+import "github.com/jinzhu/gorm"
+
 type Menu struct {
-	Id         int64      `json:"id"`
-	Restaurant Restaurant `json:"restaurant"`
-	Categories []Category `json:"categories"`
+	gorm.Model
+	RestaurantID uint
+	Categories   []Category `json:"categories"`
 }
