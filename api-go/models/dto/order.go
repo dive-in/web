@@ -1,8 +1,10 @@
 package dto
 
+import "github.com/jinzhu/gorm"
+
 type Order struct {
-	Id              int64           `json:"id"`
-	OrderItems      []OrderItem     `json:"orderItems"`
-	RestaurantTable RestaurantTable `json:"restaurantTable"`
-	User            User            `json:"user"`
+	gorm.Model
+	OrderItems        []OrderItem `json:"orderItems"`
+	RestaurantTableID uint
+	UserID            uint
 }

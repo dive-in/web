@@ -1,9 +1,10 @@
 package dto
 
+import "github.com/jinzhu/gorm"
+
 type RestaurantTable struct {
-	Id     int    `json:"id"`
-	Number string `json:"number"`
-	//Restaurant Restaurant `json:"restaurant"`
-	//Shift Shift `json:"shift"`
-	Orders []Order `json:"orders"`
+	gorm.Model
+	Number       string `json:"number"`
+	RestaurantID uint
+	Orders       []Order `json:"orders"`
 }
