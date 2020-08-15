@@ -1,0 +1,5 @@
+# Exclude idea config directory
+.idea
+
+# Exclude main executable
+main
