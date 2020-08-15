@@ -5,7 +5,6 @@ import (
 	"github.com/dive-in/web/api-go/services/restaurant"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 type RestaurantController interface {
@@ -18,8 +17,8 @@ type RestaurantControllerImpl struct {
 }
 
 func (c RestaurantControllerImpl) GetNearestRestaurants(ctx *gin.Context) {
-	var coordinates models.Coordinate
-	_ = ctx.BindQuery(&coordinates)
+	transferredObject, _ := ctx.Get("coordinates")
+	coordinates := transferredObject.(models.Coordinate)
 
 	restaurants := c.RestaurantService.GetClosestRestaurantsTo(&coordinates)
 
@@ -27,9 +26,9 @@ func (c RestaurantControllerImpl) GetNearestRestaurants(ctx *gin.Context) {
 }
 
 func (c RestaurantControllerImpl) GetMenuForRestaurant(ctx *gin.Context) {
-	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	id, _ := ctx.Get("id")
 
-	menu := c.RestaurantService.GetMenuForRestaurant(id)
+	menu := c.RestaurantService.GetMenuForRestaurant(id.(uint64))
 
 	ctx.JSON(http.StatusOK, menu)
 }
