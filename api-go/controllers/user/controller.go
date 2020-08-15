@@ -4,7 +4,6 @@ import (
 	"github.com/dive-in/web/api-go/models"
 	"github.com/dive-in/web/api-go/services/user"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"net/http"
 )
 
@@ -17,8 +16,8 @@ type UserControllerImpl struct {
 }
 
 func (u UserControllerImpl) Authenticate(ctx *gin.Context) {
-	var userModel models.AuthenticateUser
-	_ = ctx.ShouldBindBodyWith(&userModel, binding.JSON)
+	transferredObject, _ := ctx.Get("user")
+	userModel := transferredObject.(models.AuthenticateUser)
 
 	newUser := u.UserService.SaveOrUpdate(&userModel)
 

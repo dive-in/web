@@ -30,40 +30,48 @@ func Authorized(ctx *gin.Context) {
 
 func ValidateAuthenticationUser(ctx *gin.Context) {
 	var userModel models.AuthenticateUser
-	if err := ctx.ShouldBindBodyWith(&userModel, binding.JSON); err != nil {
+	if err := ctx.ShouldBindWith(&userModel, binding.JSON); err != nil {
 		createResponse(ctx, http.StatusBadRequest, err)
-	} else if !utils.IsEmailValid(userModel.Email) {
-		createResponse(ctx, http.StatusBadRequest, errors.New("email is not valid"))
-	} else {
-		isValid, err := authorization.IsTokenValid(userModel.AccessToken)
-		if !isValid {
-			if err == nil {
-				err = errors.New("provided access token is not a valid Facebook access token")
-			}
-			createResponse(ctx, http.StatusBadRequest, err)
-		}
+		return
 	}
+	if !utils.IsEmailValid(userModel.Email) {
+		createResponse(ctx, http.StatusBadRequest, errors.New("email is not valid"))
+		return
+	}
+	isValid, err := authorization.IsTokenValid(userModel.AccessToken)
+	if !isValid {
+		if err == nil {
+			err = errors.New("provided access token is not a valid Facebook access token")
+		}
+		createResponse(ctx, http.StatusBadRequest, err)
+		return
+	}
+	ctx.Set("user", userModel)
 }
 
 func ValidateCoordinates(ctx *gin.Context) {
 	var coordinates models.Coordinate
 	if err := ctx.ShouldBindQuery(&coordinates); err != nil {
 		createResponse(ctx, http.StatusBadRequest, err)
+		return
 	}
+	ctx.Set("coordinates", coordinates)
 }
 
 func ValidateRestaurantId(ctx *gin.Context) {
+	var id uint64
 	var err error
-	if _, err = strconv.ParseUint(ctx.Param("id"), 10, 64); err != nil {
+	if id, err = strconv.ParseUint(ctx.Param("id"), 10, 64); err != nil {
 		createResponse(ctx, http.StatusBadRequest, err)
+		return
 	}
+	ctx.Set("id", id)
 }
 
 func createResponse(ctx *gin.Context, statusCode int, err error) {
-	ctx.JSON(statusCode, models.ErrorResponse{
+	ctx.AbortWithStatusJSON(statusCode, models.ErrorResponse{
 		Status:  statusCode,
 		Message: http.StatusText(statusCode),
 		Reason:  []string{err.Error()},
 	})
-	ctx.Abort()
 }
