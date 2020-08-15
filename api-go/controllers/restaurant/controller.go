@@ -19,15 +19,7 @@ type RestaurantControllerImpl struct {
 
 func (c RestaurantControllerImpl) GetNearestRestaurants(ctx *gin.Context) {
 	var coordinates models.Coordinate
-	if err := ctx.ShouldBindQuery(&coordinates); err != nil {
-		statusCode := http.StatusBadRequest
-		ctx.JSON(statusCode, models.ErrorResponse{
-			Status:  statusCode,
-			Message: http.StatusText(statusCode),
-			Reason:  []string{err.Error()},
-		})
-		return
-	}
+	_ = ctx.BindQuery(&coordinates)
 
 	restaurants := c.RestaurantService.GetClosestRestaurantsTo(&coordinates)
 
@@ -35,19 +27,7 @@ func (c RestaurantControllerImpl) GetNearestRestaurants(ctx *gin.Context) {
 }
 
 func (c RestaurantControllerImpl) GetMenuForRestaurant(ctx *gin.Context) {
-	var err error
-	var id int64
-
-	param := ctx.Param("id")
-	if id, err = strconv.ParseInt(param, 10, 64); err != nil {
-		statusCode := http.StatusBadRequest
-		ctx.JSON(statusCode, models.ErrorResponse{
-			Status:  statusCode,
-			Message: http.StatusText(statusCode),
-			Reason:  []string{err.Error()},
-		})
-		return
-	}
+	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
 
 	menu := c.RestaurantService.GetMenuForRestaurant(id)
 

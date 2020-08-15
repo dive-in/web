@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/dive-in/web/api-go/controllers"
+	"github.com/dive-in/web/api-go/middleware"
 	"github.com/dive-in/web/api-go/persistence"
 	"github.com/dive-in/web/api-go/utils"
 )
@@ -19,18 +20,22 @@ func main() {
 
 	healthCheckController := serviceContainer.GetHealthcheckController()
 	restaurantController := serviceContainer.GetRestaurantController()
+	userController := serviceContainer.GetUserController()
 
-	routesV1 := router.Group("/v1")
+	apiRoutes := router.Group("/api")
 	{
-		healthCheckRoutes := routesV1.Group("/healthcheck")
+		apiRoutes.POST("/authenticate", middleware.ValidateAuthenticationUser, userController.Authenticate)
+		healthCheckRoutes := apiRoutes.Group("/healthcheck")
 		{
 			healthCheckRoutes.GET("/ping", healthCheckController.Ping)
 		}
-
-		restaurantRoutes := routesV1.Group("/restaurant")
+		routesV1 := apiRoutes.Group("/v1", middleware.Authorized)
 		{
-			restaurantRoutes.GET("/", restaurantController.GetNearestRestaurants)
-			restaurantRoutes.GET("/:id/menu", restaurantController.GetMenuForRestaurant)
+			restaurantRoutes := routesV1.Group("/restaurant")
+			{
+				restaurantRoutes.GET("/", middleware.ValidateCoordinates, restaurantController.GetNearestRestaurants)
+				restaurantRoutes.GET("/:id/menu", middleware.ValidateRestaurantId, restaurantController.GetMenuForRestaurant)
+			}
 		}
 	}
 

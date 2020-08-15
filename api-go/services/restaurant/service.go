@@ -8,7 +8,7 @@ import (
 
 type RestaurantService interface {
 	GetClosestRestaurantsTo(c *models.Coordinate) []dto.Restaurant
-	GetMenuForRestaurant(id int64) dto.Menu
+	GetMenuForRestaurant(id uint64) dto.Menu
 }
 
 type RestaurantServiceImpl struct{}
@@ -18,7 +18,7 @@ func (_ RestaurantServiceImpl) GetClosestRestaurantsTo(c *models.Coordinate) []d
 	return []dto.Restaurant{{Name: "Test", Latitude: c.Latitude, Longitude: c.Longitude}}
 }
 
-func (_ RestaurantServiceImpl) GetMenuForRestaurant(id int64) dto.Menu {
+func (_ RestaurantServiceImpl) GetMenuForRestaurant(id uint64) dto.Menu {
 	fmt.Printf("Calling GetMenuForRestaurant for restaurant id: %d", id)
 	return dto.Menu{}
 }
