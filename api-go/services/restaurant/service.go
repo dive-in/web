@@ -2,23 +2,81 @@ package restaurant
 
 import (
 	"fmt"
+	"sort"
+
 	"github.com/dive-in/web/api-go/models"
 	"github.com/dive-in/web/api-go/models/dto"
+	"github.com/dive-in/web/api-go/repositories/restaurant"
+	"github.com/dive-in/web/api-go/services/location"
 )
 
-type RestaurantService interface {
+type Service interface {
 	GetClosestRestaurantsTo(c *models.Coordinate) []dto.Restaurant
-	GetMenuForRestaurant(id uint64) dto.Menu
+	GetMenuForRestaurant(id uint) dto.Menu
 }
 
-type RestaurantServiceImpl struct{}
+const (
+	maxDistance = 10
+)
 
-func (_ RestaurantServiceImpl) GetClosestRestaurantsTo(c *models.Coordinate) []dto.Restaurant {
-	fmt.Printf("Calling GetClosestRestaurantsTo for coordinates: %f, %f\n", c.Latitude, c.Longitude)
-	return []dto.Restaurant{{Name: "Test", Latitude: c.Latitude, Longitude: c.Longitude}}
+type ServiceImpl struct {
+	restaurantRepository restaurant.Repository
+	locationService      location.Service
 }
 
-func (_ RestaurantServiceImpl) GetMenuForRestaurant(id uint64) dto.Menu {
+func getCoordinateForRestaurant(restaurant *dto.Restaurant) models.Coordinate {
+	return models.Coordinate{Latitude: restaurant.Latitude, Longitude: restaurant.Longitude}
+}
+
+func (service ServiceImpl) GetClosestRestaurantsTo(c *models.Coordinate) []dto.Restaurant {
+	/** TODO andrej-naumovski: We will probably change this logic because the app flow will change
+	 *  from allowing the user to select the restaurant to checking if the user is in range at the moment he scans the QR code
+	 */
+	restaurants := service.restaurantRepository.GetAll()
+
+	restaurantsInRange := []dto.Restaurant{}
+
+	for i := range restaurants {
+		restaurantCoordinate := getCoordinateForRestaurant(&restaurants[i])
+
+		distance := service.locationService.GetDistanceBetween(c, &restaurantCoordinate)
+
+		if distance <= maxDistance {
+			restaurantsInRange = append(restaurantsInRange, restaurants[i])
+		}
+	}
+
+	sort.Slice(restaurantsInRange, func(i, j int) bool {
+		firstRestaurantCoordinate := getCoordinateForRestaurant(&restaurantsInRange[i])
+		firstRestaurantDistance := service.locationService.GetDistanceBetween(c, &firstRestaurantCoordinate)
+
+		secondRestaurantCoordinate := getCoordinateForRestaurant(&restaurantsInRange[j])
+		secondRestaurantDistance := service.locationService.GetDistanceBetween(c, &secondRestaurantCoordinate)
+
+		return firstRestaurantDistance > secondRestaurantDistance
+	})
+
+	elementRange := 3
+
+	if len(restaurantsInRange) < 3 {
+		elementRange = len(restaurantsInRange)
+	}
+
+	return restaurantsInRange[0:elementRange]
+}
+
+func (service ServiceImpl) GetMenuForRestaurant(id uint) dto.Menu {
+	restaurant := service.restaurantRepository.GetByID(id)
 	fmt.Printf("Calling GetMenuForRestaurant for restaurant id: %d", id)
-	return dto.Menu{}
+	return restaurant.Menu
+}
+
+var service Service = nil
+
+func GetService(restaurantRepository restaurant.Repository, locationService location.Service) Service {
+	if service == nil {
+		service = ServiceImpl{restaurantRepository: restaurantRepository, locationService: locationService}
+	}
+
+	return service
 }
