@@ -1,18 +1,25 @@
 package controllers
 
 import (
+	restaurantController "github.com/dive-in/web/api-go/controllers/restaurant"
+	restaurantRepository "github.com/dive-in/web/api-go/repositories/restaurant"
+	locationService "github.com/dive-in/web/api-go/services/location"
+	restaurantService "github.com/dive-in/web/api-go/services/restaurant"
+
 	. "github.com/dive-in/web/api-go/controllers/healthcheck"
-	. "github.com/dive-in/web/api-go/controllers/restaurant"
+
 	. "github.com/dive-in/web/api-go/controllers/user"
+
 	. "github.com/dive-in/web/api-go/persistence"
+
 	. "github.com/dive-in/web/api-go/services/healthcheck"
-	. "github.com/dive-in/web/api-go/services/restaurant"
+
 	. "github.com/dive-in/web/api-go/services/user"
 )
 
 type ServiceContainer interface {
 	GetHealthcheckController() HealthcheckController
-	GetRestaurantController() RestaurantController
+	GetRestaurantController() restaurantController.Controller
 	GetUserController() UserController
 }
 
@@ -26,9 +33,12 @@ func (_ ServiceContainerImpl) GetHealthcheckController() HealthcheckController {
 	return controller
 }
 
-func (_ ServiceContainerImpl) GetRestaurantController() RestaurantController {
-	restaurantService := RestaurantServiceImpl{}
-	controller := RestaurantControllerImpl{restaurantService}
+func (ServiceContainerImpl) GetRestaurantController() restaurantController.Controller {
+	db := GetConnection()
+	restaurantRepository := restaurantRepository.GetRepository(db)
+	locationService := locationService.GetService()
+	restaurantService := restaurantService.GetService(restaurantRepository, locationService)
+	controller := restaurantController.GetController(restaurantService)
 
 	return controller
 }
