@@ -1,34 +1,57 @@
 package restaurant
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/dive-in/web/api-go/models"
 	"github.com/dive-in/web/api-go/services/restaurant"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
-type RestaurantController interface {
+type Controller interface {
 	GetNearestRestaurants(ctx *gin.Context)
 	GetMenuForRestaurant(ctx *gin.Context)
 }
 
-type RestaurantControllerImpl struct {
-	RestaurantService restaurant.RestaurantService
+type ControllerImpl struct {
+	restaurantService restaurant.Service
 }
 
-func (c RestaurantControllerImpl) GetNearestRestaurants(ctx *gin.Context) {
+func (c ControllerImpl) GetNearestRestaurants(ctx *gin.Context) {
 	transferredObject, _ := ctx.Get("coordinates")
 	coordinates := transferredObject.(models.Coordinate)
 
-	restaurants := c.RestaurantService.GetClosestRestaurantsTo(&coordinates)
+	restaurants := c.restaurantService.GetClosestRestaurantsTo(&coordinates)
 
 	ctx.JSON(http.StatusOK, restaurants)
 }
 
-func (c RestaurantControllerImpl) GetMenuForRestaurant(ctx *gin.Context) {
-	id, _ := ctx.Get("id")
+func (c ControllerImpl) GetMenuForRestaurant(ctx *gin.Context) {
+	var err error
+	var id int64
 
-	menu := c.RestaurantService.GetMenuForRestaurant(id.(uint64))
+	param := ctx.Param("id")
+	if id, err = strconv.ParseInt(param, 10, 64); err != nil {
+		statusCode := http.StatusBadRequest
+		ctx.JSON(statusCode, models.ErrorResponse{
+			Status:  statusCode,
+			Message: http.StatusText(statusCode),
+			Reason:  []string{err.Error()},
+		})
+		return
+	}
 
+	menu := c.restaurantService.GetMenuForRestaurant(uint(id))
 	ctx.JSON(http.StatusOK, menu)
+}
+
+var controller Controller = nil
+
+func GetController(restaurantService restaurant.Service) Controller {
+	if controller == nil {
+		controller = ControllerImpl{restaurantService: restaurantService}
+	}
+
+	return controller
 }
